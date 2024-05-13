@@ -165,17 +165,20 @@ MyString operator+(const MyString& str1, const MyString& str2) // friend
 
 MyString& MyString::operator+=(const MyString& str)
 {
-	auto this_size = strlen(m_pStr);
-	auto str_size = strlen(str.GetString());
-
-	char* buffer = new char[strlen(this->m_pStr) + strlen(str.m_pStr) + 1];
-	buffer[0] = '\0';
-
-	strcpy_s(buffer, this_size + 1, m_pStr);
-	strcat_s(buffer, this_size + str_size + 1, str.m_pStr);
-	
-	delete[] m_pStr;
-	m_pStr = buffer;
+	if (str.m_pStr != nullptr && m_pStr != nullptr) 
+	{
+		// засунули все в промежуточный буфер
+		char* buffer = new char[strlen(m_pStr) + strlen(str.GetString()) + 1];
+		strcpy_s(buffer, strlen(m_pStr) + strlen(str.GetString()) + 1, m_pStr);
+		strcat_s(buffer, strlen(m_pStr) + strlen(str.GetString()) + 1, str.GetString());
+		delete[] m_pStr;
+		m_pStr = buffer;
+	}
+	else if (str.m_pStr != nullptr) // && m_pStr == nullptr
+	{
+		m_pStr = new char[strlen(str.m_pStr) + 1];
+		strcpy_s(m_pStr, strlen(str.m_pStr) + 1, str.m_pStr);
+	}
 
 	return *this;
 }
